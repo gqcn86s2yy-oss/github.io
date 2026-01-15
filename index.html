@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>账号密码复制模块</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+        }
+        
+        .credentials-module {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .credentials-module:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .module-header {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .module-header h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+        
+        .module-header p {
+            color: #7f8c8d;
+            margin-top: 8px;
+            font-size: 1rem;
+        }
+        
+        .credential-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+        
+        .credential-item:hover {
+            background-color: #f0f7ff;
+        }
+        
+        .credential-label {
+            width: 100px;
+            font-weight: 600;
+            color: #34495e;
+            font-size: 1.1rem;
+        }
+        
+        .credential-value {
+            flex-grow: 1;
+            padding: 10px 15px;
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            color: #2c3e50;
+            word-break: break-all;
+        }
+        
+        .copy-btn {
+            margin-left: 15px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        .copy-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .copy-btn:active {
+            transform: translateY(0);
+        }
+        
+        .copy-btn.copied {
+            background-color: #27ae60;
+        }
+        
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .instructions h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ol {
+            margin-left: 20px;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        
+        .instructions code {
+            background-color: #e8e8e8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #27ae60;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        @media (max-width: 768px) {
+            .credential-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .credential-label {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+            
+            .credential-value {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .copy-btn {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="credentials-module">
+            <div class="module-header">
+                <h2>账号密码复制模块</h2>
+                <p>点击复制按钮即可复制对应的账号或密码</p>
+            </div>
+            
+            <div class="credential-item">
+                <div class="credential-label">账 号：</div>
+                <div class="credential-value" id="username-value">admin_2023</div>
+                <button class="copy-btn" data-target="username-value">复制账号</button>
+            </div>
+            
+            <div class="credential-item">
+                <div class="credential-label">密 码：</div>
+                <div class="credential-value" id="password-value">P@ssw0rd!2023</div>
+                <button class="copy-btn" data-target="password-value">复制密码</button>
+            </div>
+            
+            <div class="instructions">
+                <h3>使用说明：</h3>
+                <ol>
+                    <li>点击"复制账号"按钮可以复制账号内容</li>
+                    <li>点击"复制密码"按钮可以复制密码内容</li>
+                    <li>如需修改账号密码，在代码中修改以下值：
+                        <ul style="margin-top: 8px; margin-left: 20px;">
+                            <li>账号：查找 <code>admin_2023</code> 并替换为你的账号</li>
+                            <li>密码：查找 <code>P@ssw0rd!2023</code> 并替换为你的密码</li>
+                        </ul>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification">复制成功！</div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取所有复制按钮
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            const notification = document.getElementById('notification');
+            
+            // 为每个复制按钮添加点击事件
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    const targetElement = document.getElementById(targetId);
+                    const textToCopy = targetElement.textContent;
+                    
+                    // 使用现代 Clipboard API
+                    navigator.clipboard.writeText(textToCopy)
+                        .then(() => {
+                            // 显示成功通知
+                            showNotification('已复制到剪贴板: ' + textToCopy);
+                            
+                            // 改变按钮状态
+                            const originalText = this.textContent;
+                            this.textContent = '已复制！';
+                            this.classList.add('copied');
+                            
+                            // 2秒后恢复按钮状态
+                            setTimeout(() => {
+                                this.textContent = originalText;
+                                this.classList.remove('copied');
+                            }, 2000);
+                        })
+                        .catch(err => {
+                            console.error('复制失败: ', err);
+                            // 如果Clipboard API失败，使用备用方法
+                            fallbackCopyTextToClipboard(textToCopy);
+                        });
+                });
+            });
+            
+            // 显示通知函数
+            function showNotification(message) {
+                notification.textContent = message;
+                notification.classList.add('show');
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+            
+            // 备用复制方法（兼容旧浏览器）
+            function fallbackCopyTextToClipboard(text) {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                
+                // 避免屏幕滚动
+                textArea.style.top = "0";
+                textArea.style.left = "0";
+                textArea.style.position = "fixed";
+                
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                
+                try {
+                    const successful = document.execCommand('copy');
+                    if (successful) {
+                        showNotification('已复制到剪贴板: ' + text);
+                    } else {
+                        showNotification('复制失败，请手动选择文本复制');
+                    }
+                } catch (err) {
+                    console.error('备用复制方法失败: ', err);
+                    showNotification('复制失败，请手动选择文本复制');
+                }
+                
+                document.body.removeChild(textArea);
+            }
+        });
+    </script>
+</body>
+</html>
